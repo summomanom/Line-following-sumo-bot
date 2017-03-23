@@ -1,9 +1,6 @@
-#include <stdio.h>
-#include <p18f4525.h>
-#include "sumovore.h"
-#include "motor_control.h"
-#include "interrupts.h"
-#include "osc.h"
+    #include "sumovore.h"
+    #include "motor_control.h"
+
     void follow_simple_curves(void);
     void spin_left(void);
     void turn_left(void);
@@ -11,61 +8,11 @@
     void turn_right(void);
     void spin_right(void);
 
-
     void motor_control(void)
     {
          // very simple motor control
          switch(SeeLine.B)
          {
-             case 0b00111u:
-             case 0b01111u:
-             case 0b00011u:
-   
-             {  
-                 check_sensors();    // from sumovore.c
-                 set_leds(); 
-                 while(SeeLine.B == 0b00111u || SeeLine.B == 0b01111u || SeeLine.B == 0b00011u)
-                 {
-                     straight_fwd();
-                     check_sensors();    // from sumovore.c
-                     set_leds(); 
-                 }
-                 
-                     while(SeeLine.B == 0b00000u || SeeLine.B ==0b00001u||SeeLine.B == 0b00100u||SeeLine.B == 0b00110u||SeeLine.B == 0b00011u)
-                     {
-                         
-                         spin_right();
-                         check_sensors();    // from sumovore.c
-                         set_leds(); 
-                     }
-         }
-                 
-               
-            break;
-            
-             case 0b11100u:
-             case 0b11000u:
-             case 0b11110u:
-             { 
-              check_sensors();    // from sumovore.c
-                 set_leds(); 
-                 while(SeeLine.B == 0b11100u || SeeLine.B == 0b11110u || SeeLine.B == 0b11000u)
-                 {
-                     straight_fwd();
-                     check_sensors();    // from sumovore.c
-                     set_leds(); 
-                 }
-                 
-                     while(SeeLine.B == 0b00000u || SeeLine.B ==0b10000u||SeeLine.B == 0b00100u||SeeLine.B == 0b01100u||SeeLine.B == 0b11000u)
-                         
-                     {
-                         
-                         spin_left();
-                         check_sensors();    // from sumovore.c
-                         set_leds(); 
-                     }
-             }
-                 break;
            
             case 0b00100u:
             case 0b00010u:
@@ -112,7 +59,7 @@
     void straight_fwd(void)
     {
       set_motor_speed(left, fast, 0); 
-      set_motor_speed(right, fast, -37); 
+      set_motor_speed(right, fast, 0); 
     }
     //spin in one place to the right
     void spin_right(void)
