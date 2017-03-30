@@ -41,18 +41,12 @@
                  set_leds(); 
                  while(SeeLine.B == 0b00111u || SeeLine.B == 0b01111u || SeeLine.B == 0b00011u)
                  {
-                     while(SeeLine.B != 0b00000u)
-                     {
                      straight_fwd_fast();
                      check_sensors();    
                      set_leds(); 
-                     }
-                     check_sensors();
-                     set_leds();
                  }
                  
-                     while(SeeLine.B == 0b00000u || SeeLine.B ==0b00001u|| SeeLine.B ==0b00101u ||
-                             SeeLine.B == 0b00100u||SeeLine.B == 0b00110u||SeeLine.B == 0b00011u)
+                     while(SeeLine.B == 0b00000u || SeeLine.B ==0b00001u||SeeLine.B == 0b00100u||SeeLine.B == 0b00110u||SeeLine.B == 0b00011u)
                      {
                          
                          spin_right_fast();
@@ -72,31 +66,22 @@
                 set_leds(); 
                  while(SeeLine.B == 0b11100u || SeeLine.B == 0b11110u || SeeLine.B == 0b11000u)
                  {
-                     while(SeeLine.B != 0b00000u)
-                     {
                      straight_fwd_fast();
                      check_sensors();    
                      set_leds(); 
-                     }
-                     check_sensors();
-                     set_leds();
                  }
                  
-                     while(SeeLine.B == 0b00000u ||SeeLine.B == 0b00100u || SeeLine.B ==0b10000u||
-                              SeeLine.B == 0b10100u ||SeeLine.B == 0b01100u||SeeLine.B == 0b11000u )
+                     while(SeeLine.B == 0b00000u || SeeLine.B ==0b10000u||SeeLine.B == 0b00100u||SeeLine.B == 0b01100u||SeeLine.B == 0b11000u)
                          
                      {
+                         
                          spin_left_fast();
                          check_sensors();    
                          set_leds(); 
                      }
-                
-                
-              
              }
                  break;
             
-
             case 0b00100u:
             case 0b00010u:
             case 0b01000u:
@@ -108,8 +93,36 @@
 
 
             case 0b00000u:
-                            motors_brake_all();
-                           break;
+            {
+                OpenTimer0(TIMER_INT_OFF & T0_SOURCE_INT & T0_16BIT & T0_PS_1_8);
+               straight_fwd_fast();
+                check_sensors();    
+                set_leds();
+                 while(SeeLine.B == 0b00000u )
+                 {
+                    
+                     WriteTimer0(0); 
+                     while(ReadTimer0() <= 25000u)
+                     {
+                         straight_fwd_fast();
+
+                     }
+                     OpenTimer0(TIMER_INT_OFF & T0_SOURCE_INT & T0_16BIT & T0_PS_1_128);
+                     WriteTimer0(0); 
+                     while(ReadTimer0() <= 31000u)
+                     {
+                         spin_left_fast();  
+                     }
+                     straight_fwd_fast();
+                     check_sensors();    
+                     set_leds();
+                      
+                 }
+
+                break;
+            }
+                            
+                           
             default:       break;
           } 
     }
@@ -117,10 +130,10 @@
     void follow_simple_curves(void)
     {
          if ( SeeLine.b.Center ) straight_fwd_fast();
-         else if (SeeLine.b.Left) spin_left_fast();
+         else if (SeeLine.b.Left) spin_left_medium();
          else if (SeeLine.b.CntLeft) turn_left_medium();
          else if (SeeLine.b.CntRight) turn_right_medium();
-         else if (SeeLine.b.Right) spin_right_fast();
+         else if (SeeLine.b.Right) spin_right_medium();
     }
 
 
@@ -128,7 +141,7 @@
     void spin_left_fast(void)
     {
       set_motor_speed(left, rev_fast, 0); 
-      set_motor_speed(right, fast, 0); 
+      set_motor_speed(right, fast, fast_right_wheel); 
     }
     void spin_left_medium(void)
     {
@@ -145,7 +158,7 @@
     void turn_left_fast(void)
     {
       set_motor_speed(left, stop, 0); 
-      set_motor_speed(right, fast, 0); 
+      set_motor_speed(right, fast, fast_right_wheel); 
     }
     void turn_left_medium(void)
     {
