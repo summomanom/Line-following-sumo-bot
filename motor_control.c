@@ -31,7 +31,75 @@
          // very simple motor control
          switch(SeeLine.B)
          {
-             //right 90 degrees
+
+             //cases for tight angle turns to the right 
+             case 0b00101u:
+             case 0b01001u:
+             {
+                 // continue forward as long as the edge / middle sensors are on 
+                 while(SeeLine.B == 0b00101u || SeeLine.B == 0b01001u )
+                 {
+                     straight_fwd_medium();
+                     check_sensors();    
+                     set_leds(); 
+                 }
+                 //if the sensors change to show the two close ones we know we have a tight angle turn
+                 if(SeeLine.B == 0b00110u || SeeLine.B == 0b00111u)
+                 {
+                   //Now that we know that its a tight angle we want to continue until we see white space
+                     while(SeeLine.B != 0b00000u)
+                     {
+                         straight_fwd_medium();
+                     check_sensors();    
+                     set_leds();
+                     }
+                     //after white space is seen begin to turn right until the robot is centered back onto a line
+                     while(SeeLine.B != 0b00100u)
+                     {
+                         spin_right_medium(); 
+                     check_sensors();    
+                     set_leds(); 
+                     }
+                     
+                 }
+             }
+                 break; 
+                 
+         
+         
+             //cases to check for small angles on the left of the robot
+             case 0b10100u:
+             case 0b10010u:
+             {
+                 //while the robot sees the far edge and center continue to go forward
+                 while(SeeLine.B == 0b10100u || SeeLine.B == 0b10010u )
+                 {
+                     straight_fwd_medium();
+                     check_sensors();    
+                     set_leds(); 
+                 }
+                 //if the robot sees the center and closer led we know that we have found  a small angle turn 
+                 if(SeeLine.B == 0b01100u || SeeLine.B == 0b11100u)
+                 {
+                     //Continue forward until we hit white space
+                     while(SeeLine.B != 0b00000u)
+                     {
+                         straight_fwd_medium();
+                     check_sensors();    
+                     set_leds();
+                     }
+                     //once white space is found turn to the left until centered back on the line
+                     while(SeeLine.B != 0b00100u)
+                     {
+                     spin_left_medium(); 
+                     check_sensors();    
+                     set_leds(); 
+                     }
+                     
+                 }
+             }
+                 break; 
+             
              case 0b00111u:
              case 0b01111u:
              case 0b00011u:
@@ -41,7 +109,9 @@
                  set_leds(); 
                  while(SeeLine.B == 0b00111u || SeeLine.B == 0b01111u || SeeLine.B == 0b00011u)
                  {
-                     straight_fwd_fast();
+
+                     straight_fwd_medium();
+
                      check_sensors();    
                      set_leds(); 
                  }
@@ -66,7 +136,9 @@
                 set_leds(); 
                  while(SeeLine.B == 0b11100u || SeeLine.B == 0b11110u || SeeLine.B == 0b11000u)
                  {
-                     straight_fwd_fast();
+
+                     straight_fwd_medium();
+
                      check_sensors();    
                      set_leds(); 
                  }
@@ -133,11 +205,13 @@
 
     void follow_simple_curves(void)
     {
-         if ( SeeLine.b.Center ) straight_fwd_fast();
+
+         if ( SeeLine.b.Center ) straight_fwd_medium();
          else if (SeeLine.b.Left) spin_left_medium();
          else if (SeeLine.b.CntLeft) turn_left_medium();
          else if (SeeLine.b.CntRight) turn_right_medium();
          else if (SeeLine.b.Right) spin_right_medium();
+
     }
 
 
