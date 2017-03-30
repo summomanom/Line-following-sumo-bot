@@ -92,27 +92,31 @@
                            break;
 
 
+             //turning around at dead ends (doesn't work fully yet&timers wrong)
             case 0b00000u:
             {
                 OpenTimer0(TIMER_INT_OFF & T0_SOURCE_INT & T0_16BIT & T0_PS_1_8);
-               straight_fwd_fast();
+                straight_fwd_fast();
                 check_sensors();    
                 set_leds();
+                
                  while(SeeLine.B == 0b00000u )
                  {
-                    
+                    //sees white keeps going straight for 8cm
                      WriteTimer0(0); 
                      while(ReadTimer0() <= 25000u)
                      {
                          straight_fwd_fast();
 
                      }
+                     //turns around
                      OpenTimer0(TIMER_INT_OFF & T0_SOURCE_INT & T0_16BIT & T0_PS_1_128);
                      WriteTimer0(0); 
                      while(ReadTimer0() <= 31000u)
                      {
                          spin_left_fast();  
                      }
+                     //goes back to tape
                      straight_fwd_fast();
                      check_sensors();    
                      set_leds();
