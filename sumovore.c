@@ -37,7 +37,6 @@
 #include <xc.h>
 #include <stdio.h>
 #include <reset.h>
-#include "..\Common\osc.h"
 #include "sumovore.h"
 #include "osc.h"
 
