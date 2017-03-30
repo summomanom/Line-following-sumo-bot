@@ -41,12 +41,18 @@
                  set_leds(); 
                  while(SeeLine.B == 0b00111u || SeeLine.B == 0b01111u || SeeLine.B == 0b00011u)
                  {
+                     while(SeeLine.B != 0b00000u)
+                     {
                      straight_fwd_fast();
                      check_sensors();    
                      set_leds(); 
+                     }
+                     check_sensors();
+                     set_leds();
                  }
                  
-                     while(SeeLine.B == 0b00000u || SeeLine.B ==0b00001u||SeeLine.B == 0b00100u||SeeLine.B == 0b00110u||SeeLine.B == 0b00011u)
+                     while(SeeLine.B == 0b00000u || SeeLine.B ==0b00001u|| SeeLine.B ==0b00101u ||
+                             SeeLine.B == 0b00100u||SeeLine.B == 0b00110u||SeeLine.B == 0b00011u)
                      {
                          
                          spin_right_fast();
@@ -66,22 +72,31 @@
                 set_leds(); 
                  while(SeeLine.B == 0b11100u || SeeLine.B == 0b11110u || SeeLine.B == 0b11000u)
                  {
+                     while(SeeLine.B != 0b00000u)
+                     {
                      straight_fwd_fast();
                      check_sensors();    
                      set_leds(); 
+                     }
+                     check_sensors();
+                     set_leds();
                  }
                  
-                     while(SeeLine.B == 0b00000u || SeeLine.B ==0b10000u||SeeLine.B == 0b00100u||SeeLine.B == 0b01100u||SeeLine.B == 0b11000u)
+                     while(SeeLine.B == 0b00000u ||SeeLine.B == 0b00100u || SeeLine.B ==0b10000u||
+                              SeeLine.B == 0b10100u ||SeeLine.B == 0b01100u||SeeLine.B == 0b11000u )
                          
                      {
-                         
                          spin_left_fast();
                          check_sensors();    
                          set_leds(); 
                      }
+                
+                
+              
              }
                  break;
             
+
             case 0b00100u:
             case 0b00010u:
             case 0b01000u:
