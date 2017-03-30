@@ -109,9 +109,7 @@
                  set_leds(); 
                  while(SeeLine.B == 0b00111u || SeeLine.B == 0b01111u || SeeLine.B == 0b00011u)
                  {
-
                      straight_fwd_medium();
-
                      check_sensors();    
                      set_leds(); 
                  }
@@ -136,9 +134,7 @@
                 set_leds(); 
                  while(SeeLine.B == 0b11100u || SeeLine.B == 0b11110u || SeeLine.B == 0b11000u)
                  {
-
                      straight_fwd_medium();
-
                      check_sensors();    
                      set_leds(); 
                  }
@@ -164,54 +160,21 @@
                            break;
 
 
-             //turning around at dead ends (doesn't work fully yet&timers wrong)
             case 0b00000u:
-            {
-                OpenTimer0(TIMER_INT_OFF & T0_SOURCE_INT & T0_16BIT & T0_PS_1_8);
-                straight_fwd_fast();
-                check_sensors();    
-                set_leds();
-                
-                 while(SeeLine.B == 0b00000u )
-                 {
-                    //sees white keeps going straight for 8cm
-                     WriteTimer0(0); 
-                     while(ReadTimer0() <= 25000u)
-                     {
-                         straight_fwd_fast();
-
-                     }
-                     //turns around
-                     OpenTimer0(TIMER_INT_OFF & T0_SOURCE_INT & T0_16BIT & T0_PS_1_128);
-                     WriteTimer0(0); 
-                     while(ReadTimer0() <= 31000u)
-                     {
-                         spin_left_fast();  
-                     }
-                     //goes back to tape
-                     straight_fwd_fast();
-                     check_sensors();    
-                     set_leds();
-                      
-                 }
-
-                break;
-            }
-                            
-                           
+                            motors_brake_all();
+                           break;
             default:       break;
           } 
     }
 
     void follow_simple_curves(void)
     {
-
          if ( SeeLine.b.Center ) straight_fwd_medium();
          else if (SeeLine.b.Left) spin_left_medium();
          else if (SeeLine.b.CntLeft) turn_left_medium();
          else if (SeeLine.b.CntRight) turn_right_medium();
-         else if (SeeLine.b.Right) spin_right_medium();
-
+         else if (SeeLine.b.Right) spin_right_medium
+                 ;
     }
 
 
