@@ -54,7 +54,47 @@
 
 
             case 0b00000u:
-                           motors_brake_all();
+            {
+                //small timer to make sure it is a gap
+               OpenTimer0(TIMER_INT_OFF & T0_SOURCE_INT & T0_16BIT & T0_PS_1_16);
+                 TMR0IF = 0;
+                 WriteTimer0(35536);
+                 while(TMR0IF == 0 )
+                 {
+                   straight_fwd_fast();  
+                   check_sensors();
+                     set_leds();
+                 }
+               //move forward 8cm
+               if (SeeLine.B == 0b00000u)
+               {
+               OpenTimer0(TIMER_INT_OFF & T0_SOURCE_INT & T0_16BIT & T0_PS_1_32);
+                 TMR0IF = 0;
+                 WriteTimer0(25536);
+                 while(TMR0IF == 0&&SeeLine.B == 0b00000u)
+                 {
+                   straight_fwd_fast();  
+                   check_sensors();
+                     set_leds();
+                 }
+               }
+               //once reached 8cm turn around
+               if (SeeLine.B == 0b00000u)
+                 {
+                 OpenTimer0(TIMER_INT_OFF & T0_SOURCE_INT & T0_16BIT & T0_PS_1_64);
+                 TMR0IF = 0;
+                 WriteTimer0(9286);
+                 while(TMR0IF == 0&&SeeLine.B == 0b00000u)
+                 {
+                   spin_right_fast();  
+                   check_sensors();
+                     set_leds();
+                 }
+                 CloseTimer0();
+               }
+               
+            }
+                           
                            break;
             default:       break;
           } 
