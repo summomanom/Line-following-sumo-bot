@@ -1,9 +1,7 @@
-#include <stdio.h>
-#include <p18f4525.h>
+#include <xc.h>
 #include "sumovore.h"
 #include "motor_control.h"
-#include "interrupts.h"
-#include "osc.h"
+
     void follow_simple_curves(void);
     void spin_left_fast(void);
     void spin_left_medium(void);
@@ -20,8 +18,9 @@
     void spin_right_fast(void);
     void spin_right_medium(void);
     void spin_right_slow(void);
-    
-    //variables for speed modifier
+    void turn_left2centre(void);
+    void turn_right2centre(void);
+     //variables for speed modifier
     int fast_right_wheel=-37;
     int medium_left_wheel=17;
     int slow_left_wheel=21;
@@ -31,125 +30,36 @@
          // very simple motor control
          switch(SeeLine.B)
          {
-
-             //cases for tight angle turns to the right 
-             case 0b00101u:
-             case 0b01001u:
-             {
-                 // continue forward as long as the edge / middle sensors are on 
-                 while(SeeLine.B == 0b00101u || SeeLine.B == 0b01001u )
-                 {
-                     straight_fwd_medium();
-                     check_sensors();    
-                     set_leds(); 
-                 }
-                 //if the sensors change to show the two close ones we know we have a tight angle turn
-                 if(SeeLine.B == 0b00110u || SeeLine.B == 0b00111u)
-                 {
-                   //Now that we know that its a tight angle we want to continue until we see white space
-                     while(SeeLine.B != 0b00000u)
-                     {
-                         straight_fwd_medium();
-                     check_sensors();    
-                     set_leds();
-                     }
-                     //after white space is seen begin to turn right until the robot is centered back onto a line
-                     while(SeeLine.B != 0b00100u)
-                     {
-                         spin_right_medium(); 
-                     check_sensors();    
-                     set_leds(); 
-                     }
-                     
-                 }
-             }
-                 break; 
-                 
-         
-         
-             //cases to check for small angles on the left of the robot
-             case 0b10100u:
-             case 0b10010u:
-             {
-                 //while the robot sees the far edge and center continue to go forward
-                 while(SeeLine.B == 0b10100u || SeeLine.B == 0b10010u )
-                 {
-                     straight_fwd_medium();
-                     check_sensors();    
-                     set_leds(); 
-                 }
-                 //if the robot sees the center and closer led we know that we have found  a small angle turn 
-                 if(SeeLine.B == 0b01100u || SeeLine.B == 0b11100u)
-                 {
-                     //Continue forward until we hit white space
-                     while(SeeLine.B != 0b00000u)
-                     {
-                         straight_fwd_medium();
-                     check_sensors();    
-                     set_leds();
-                     }
-                     //once white space is found turn to the left until centered back on the line
-                     while(SeeLine.B != 0b00100u)
-                     {
-                     spin_left_medium(); 
-                     check_sensors();    
-                     set_leds(); 
-                     }
-                     
-                 }
-             }
-                 break; 
-             
-             case 0b00111u:
-             case 0b01111u:
-             case 0b00011u:
-   
-             {  
-                 check_sensors();    
-                 set_leds(); 
-                 while(SeeLine.B == 0b00111u || SeeLine.B == 0b01111u || SeeLine.B == 0b00011u)
-                 {
-                     straight_fwd_medium();
-                     check_sensors();    
-                     set_leds(); 
-                 }
-                 
-                     while(SeeLine.B == 0b00000u || SeeLine.B ==0b00001u||SeeLine.B == 0b00100u||SeeLine.B == 0b00110u||SeeLine.B == 0b00011u)
-                     {
-                         
-                         spin_right_fast();
-                         check_sensors();    
-                         set_leds(); 
-                     }
-             }
-                 
-               
-            break;
-            //left 90 degrees
-             case 0b11100u:
              case 0b11000u:
-             case 0b11110u:
-             { 
-                check_sensors();    
-                set_leds(); 
-                 while(SeeLine.B == 0b11100u || SeeLine.B == 0b11110u || SeeLine.B == 0b11000u)
+             case 0b11100u:
+                 OpenTimer0(TIMER_INT_OFF & T0_SOURCE_INT & T0_16BIT & T0_PS_1_16);
+                 TMR0IF = 0;
+                 WriteTimer0(20000);
+                 while(TMR0IF == 0 && SeeLine.B != 0b00000u)
                  {
-                     straight_fwd_medium();
-                     check_sensors();    
-                     set_leds(); 
+                   straight_fwd_fast();  
+                   check_sensors();
+                     set_leds();
                  }
-                 
-                     while(SeeLine.B == 0b00000u || SeeLine.B ==0b10000u||SeeLine.B == 0b00100u||SeeLine.B == 0b01100u||SeeLine.B == 0b11000u)
-                         
-                     {
-                         
-                         spin_left_fast();
-                         check_sensors();    
-                         set_leds(); 
-                     }
-             }
+                 CloseTimer0();
+                 if(SeeLine.B == 0b00000u)turn_left2centre();
                  break;
-            
+             
+             case 0b00011u:
+             case 0b00111u:
+                 OpenTimer0(TIMER_INT_OFF & T0_SOURCE_INT & T0_16BIT & T0_PS_1_16);
+                 TMR0IF = 0;
+                 WriteTimer0(20000);
+                 while(TMR0IF == 0 && SeeLine.B != 0b00000u)
+                 {
+                   straight_fwd_fast(); 
+                   check_sensors();
+                     set_leds();
+                 }
+                 CloseTimer0();
+                 if(SeeLine.B == 0b00000u)turn_right2centre();
+                 break;
+           
             case 0b00100u:
             case 0b00010u:
             case 0b01000u:
@@ -161,7 +71,7 @@
 
 
             case 0b00000u:
-                            motors_brake_all();
+                           motors_brake_all();
                            break;
             default:       break;
           } 
@@ -169,12 +79,30 @@
 
     void follow_simple_curves(void)
     {
-         if ( SeeLine.b.Center ) straight_fwd_medium();
-         else if (SeeLine.b.Left) spin_left_medium();
+         if ( SeeLine.b.Center ) straight_fwd_fast();
+         else if (SeeLine.b.Left) spin_left_fast();
          else if (SeeLine.b.CntLeft) turn_left_medium();
          else if (SeeLine.b.CntRight) turn_right_medium();
-         else if (SeeLine.b.Right) spin_right_medium
-                 ;
+         else if (SeeLine.b.Right) spin_right_fast();
+    }
+    
+    void turn_left2centre(void)
+    {
+                 while(SeeLine.B != 0b00100u)
+                 {
+                     spin_left_fast();
+                     check_sensors();
+                     set_leds();
+                 }
+    }
+    void turn_right2centre(void)
+    {
+                 while(SeeLine.B != 0b00100u)
+                 {
+                     spin_right_fast();
+                     check_sensors();
+                     set_leds();
+                 }
     }
 
 
