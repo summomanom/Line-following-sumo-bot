@@ -20,6 +20,7 @@
     void spin_right_slow(void);
     void turn_left2centre(void);
     void turn_right2centre(void);
+    void check_for_whitespace(char prescaler, int write_time);
      //variables for speed modifier
     int fast_right_wheel=-37;
     int medium_left_wheel=17;
@@ -47,16 +48,7 @@
              
              case 0b00011u:
              case 0b00111u:
-                 OpenTimer0(TIMER_INT_OFF & T0_SOURCE_INT & T0_16BIT & T0_PS_1_16);
-                 TMR0IF = 0;
-                 WriteTimer0(20000);
-                 while(TMR0IF == 0 && SeeLine.B != 0b00000u)
-                 {
-                   straight_fwd_fast(); 
-                   check_sensors();
-                     set_leds();
-                 }
-                 CloseTimer0();
+                 
                  if(SeeLine.B == 0b00000u)turn_right2centre();
                  break;
            
@@ -76,6 +68,113 @@
             default:       break;
           } 
     }
+    
+    void check_for_whitespace(char prescaler, int write_time)
+    {
+        switch(prescaler)
+        {
+            case 1:
+                OpenTimer0(TIMER_INT_OFF & T0_SOURCE_INT & T0_16BIT & T0_PS_1_1);
+                TMR0IF = 0;
+                 WriteTimer0(write_time);
+                 while(TMR0IF == 0 && SeeLine.B != 0b00000u)
+                 {
+                   straight_fwd_fast(); 
+                   check_sensors();
+                     set_leds();
+                 }
+                 CloseTimer0();
+                 break;
+            case 4:
+                OpenTimer0(TIMER_INT_OFF & T0_SOURCE_INT & T0_16BIT & T0_PS_1_4);
+                TMR0IF = 0;
+                 WriteTimer0(write_time);
+                 while(TMR0IF == 0 && SeeLine.B != 0b00000u)
+                 {
+                   straight_fwd_fast(); 
+                   check_sensors();
+                     set_leds();
+                 }
+                 CloseTimer0();
+                 break;
+                 
+                 case 8:
+                OpenTimer0(TIMER_INT_OFF & T0_SOURCE_INT & T0_16BIT & T0_PS_1_8);
+                TMR0IF = 0;
+                 WriteTimer0(write_time);
+                 while(TMR0IF == 0 && SeeLine.B != 0b00000u)
+                 {
+                   straight_fwd_fast(); 
+                   check_sensors();
+                     set_leds();
+                 }
+                 CloseTimer0();
+                 break;
+                 
+                 case 16:
+                OpenTimer0(TIMER_INT_OFF & T0_SOURCE_INT & T0_16BIT & T0_PS_1_16);
+                TMR0IF = 0;
+                 WriteTimer0(write_time);
+                 while(TMR0IF == 0 && SeeLine.B != 0b00000u)
+                 {
+                   straight_fwd_fast(); 
+                   check_sensors();
+                     set_leds();
+                 }
+                 CloseTimer0();
+                 break;
+ 
+                 case 32:
+                OpenTimer0(TIMER_INT_OFF & T0_SOURCE_INT & T0_16BIT & T0_PS_1_32);
+                TMR0IF = 0;
+                 WriteTimer0(write_time);
+                 while(TMR0IF == 0 && SeeLine.B != 0b00000u)
+                 {
+                   straight_fwd_fast(); 
+                   check_sensors();
+                     set_leds();
+                 }
+                 CloseTimer0();
+                 break;
+                 case 64:
+                OpenTimer0(TIMER_INT_OFF & T0_SOURCE_INT & T0_16BIT & T0_PS_1_64);
+                TMR0IF = 0;
+                 WriteTimer0(write_time);
+                 while(TMR0IF == 0 && SeeLine.B != 0b00000u)
+                 {
+                   straight_fwd_fast(); 
+                   check_sensors();
+                     set_leds();
+                 }
+                 CloseTimer0();
+                 break;
+                 case 128:
+                OpenTimer0(TIMER_INT_OFF & T0_SOURCE_INT & T0_16BIT & T0_PS_1_128);
+                TMR0IF = 0;
+                 WriteTimer0(write_time);
+                 while(TMR0IF == 0 && SeeLine.B != 0b00000u)
+                 {
+                   straight_fwd_fast(); 
+                   check_sensors();
+                     set_leds();
+                 }
+                 CloseTimer0();
+                 break;
+                 case 256:
+                OpenTimer0(TIMER_INT_OFF & T0_SOURCE_INT & T0_16BIT & T0_PS_1_256);
+                TMR0IF = 0;
+                 WriteTimer0(write_time);
+                 while(TMR0IF == 0 && SeeLine.B != 0b00000u)
+                 {
+                   straight_fwd_fast(); 
+                   check_sensors();
+                     set_leds();
+                 }
+                 CloseTimer0();
+                 break;                 
+        }
+    }
+    
 
     void follow_simple_curves(void)
     {
