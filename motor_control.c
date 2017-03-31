@@ -33,22 +33,13 @@
          {
              case 0b11000u:
              case 0b11100u:
-                 OpenTimer0(TIMER_INT_OFF & T0_SOURCE_INT & T0_16BIT & T0_PS_1_16);
-                 TMR0IF = 0;
-                 WriteTimer0(20000);
-                 while(TMR0IF == 0 && SeeLine.B != 0b00000u)
-                 {
-                   straight_fwd_fast();  
-                   check_sensors();
-                     set_leds();
-                 }
-                 CloseTimer0();
+                 check_for_whitespace(16, 20000);
                  if(SeeLine.B == 0b00000u)turn_left2centre();
                  break;
              
              case 0b00011u:
              case 0b00111u:
-                 
+                 check_for_whitespace(16, 20000);   
                  if(SeeLine.B == 0b00000u)turn_right2centre();
                  break;
            
