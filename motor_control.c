@@ -31,16 +31,32 @@
          // very simple motor control
          switch(SeeLine.B)
          {
+               //if one side gets triggered continue forward. if white space is found turn tell centered on a line
              case 0b11000u:
              case 0b11100u:
                  check_for_whitespace(16, 20000);
                  if(SeeLine.B == 0b00000u)turn_left2centre();
                  break;
              
+                 //if one side gets triggered continue forward. if white space is found turn tell centered on a line
              case 0b00011u:
              case 0b00111u:
                  check_for_whitespace(16, 20000);   
                  if(SeeLine.B == 0b00000u)turn_right2centre();
+                 break;
+                 
+                 //if the edge and a center gets triggered continue forward. if white space is found turn tell centered on a line
+             case 0b00101u:
+             case 0b01001u:
+                 check_for_whitespace(32, 0);   
+                 if(SeeLine.B == 0b00000u)turn_right2centre();
+                 break;
+             
+                 //if the edge and a center gets triggered continue forward. if white space is found turn tell centered on a line
+             case 0b10100u:
+             case 0b10010u:
+                 check_for_whitespace(32, 0);   
+                 if(SeeLine.B == 0b00000u)turn_left2centre();
                  break;
            
             case 0b00100u:
@@ -61,7 +77,7 @@
                  WriteTimer0(35536);
                  while(TMR0IF == 0 )
                  {
-                   straight_fwd_fast();  
+                   follow_simple_curves();  
                    check_sensors();
                      set_leds();
                  }
@@ -110,7 +126,7 @@
                  WriteTimer0(write_time);
                  while(TMR0IF == 0 && SeeLine.B != 0b00000u)
                  {
-                   straight_fwd_fast(); 
+                   follow_simple_curves(); 
                    check_sensors();
                      set_leds();
                  }
@@ -122,7 +138,7 @@
                  WriteTimer0(write_time);
                  while(TMR0IF == 0 && SeeLine.B != 0b00000u)
                  {
-                   straight_fwd_fast(); 
+                   follow_simple_curves(); 
                    check_sensors();
                      set_leds();
                  }
@@ -135,7 +151,7 @@
                  WriteTimer0(write_time);
                  while(TMR0IF == 0 && SeeLine.B != 0b00000u)
                  {
-                   straight_fwd_fast(); 
+                   follow_simple_curves(); 
                    check_sensors();
                      set_leds();
                  }
@@ -148,7 +164,7 @@
                  WriteTimer0(write_time);
                  while(TMR0IF == 0 && SeeLine.B != 0b00000u)
                  {
-                   straight_fwd_fast(); 
+                   follow_simple_curves(); 
                    check_sensors();
                      set_leds();
                  }
@@ -161,7 +177,7 @@
                  WriteTimer0(write_time);
                  while(TMR0IF == 0 && SeeLine.B != 0b00000u)
                  {
-                   straight_fwd_fast(); 
+                   follow_simple_curves(); 
                    check_sensors();
                      set_leds();
                  }
@@ -173,7 +189,7 @@
                  WriteTimer0(write_time);
                  while(TMR0IF == 0 && SeeLine.B != 0b00000u)
                  {
-                   straight_fwd_fast(); 
+                   follow_simple_curves(); 
                    check_sensors();
                      set_leds();
                  }
@@ -185,7 +201,7 @@
                  WriteTimer0(write_time);
                  while(TMR0IF == 0 && SeeLine.B != 0b00000u)
                  {
-                   straight_fwd_fast(); 
+                   follow_simple_curves(); 
                    check_sensors();
                      set_leds();
                  }
@@ -197,7 +213,7 @@
                  WriteTimer0(write_time);
                  while(TMR0IF == 0 && SeeLine.B != 0b00000u)
                  {
-                   straight_fwd_fast(); 
+                   follow_simple_curves(); 
                    check_sensors();
                      set_leds();
                  }
