@@ -87,7 +87,9 @@
                {
                OpenTimer0(TIMER_INT_OFF & T0_SOURCE_INT & T0_16BIT & T0_PS_1_32);
                  TMR0IF = 0;
+
                  WriteTimer0(wait_for_8cm);
+
                  while(TMR0IF == 0&&SeeLine.B == 0b00000u)
                  {
                    straight_fwd_fast();  
@@ -100,7 +102,9 @@
                  {
                  OpenTimer0(TIMER_INT_OFF & T0_SOURCE_INT & T0_16BIT & T0_PS_1_64);
                  TMR0IF = 0;
+
                  WriteTimer0(turn_around_time);
+
                  while(TMR0IF == 0&&SeeLine.B == 0b00000u)
                  {
                    spin_right_fast();  
@@ -111,12 +115,26 @@
                }
                
             }
+
                            
                            break;
                  
             default:   
                 follow_simple_curves();
                 break;
+
+            case 0b11111u:
+            {
+                ensure_whitespace();
+                if (SeeLine.B == 0b11111u)
+                     motors_brake_all();
+                 
+            }
+            break;
+            default:   
+                follow_simple_curves();
+                break;
+
           } 
     }
     
