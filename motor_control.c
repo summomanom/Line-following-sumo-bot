@@ -28,11 +28,11 @@
     int medium_left_wheel=17;
     int slow_left_wheel=21;
     
-    //int wait_for_8cm = 25536;  //for half battery
+    int wait_for_8cm = 10000;  //for half battery
    
-    int wait_for_8cm = 45536;  // for full battery    
-    //int turn_around_time =9286; // for half battery    
-    int turn_around_time = 15286; // for full battery
+    //int wait_for_8cm = 45536;  // for full battery    
+    int turn_around_time =9286; // for half battery    
+    //int turn_around_time = 15286; // for full battery
 
     void motor_control(void)
     {
@@ -42,20 +42,21 @@
                //if one side gets triggered continue forward. if white space is found turn tell centered on a line
              case 0b11000u:
              case 0b11100u:
-                 check_for_whitespace(16, 40000);
+                 check_for_whitespace(32, 0);
                  if(SeeLine.B == 0b00000u)turn_left2centre();
                  break;
              
                  //if one side gets triggered continue forward. if white space is found turn tell centered on a line
              case 0b00011u:
              case 0b00111u:
-                 check_for_whitespace(16, 40000);   
+                 check_for_whitespace(32, 0);   
                  if(SeeLine.B == 0b00000u)turn_right2centre();
                  break;
                  
                  //if the edge and a center gets triggered continue forward. if white space is found turn tell centered on a line
              case 0b00101u:
              case 0b01001u:
+             case 0b01101u:
                  check_for_whitespace(32, 0);   
                 
                  if(SeeLine.B == 0b00000u)turn_right2centre();
@@ -117,14 +118,21 @@
             }
 
                            
-                           break;
-                 
-            default:   
-                follow_simple_curves();
-                break;
+               
 
+                           
+                           break;
             case 0b11111u:
             {
+                 OpenTimer0(TIMER_INT_OFF & T0_SOURCE_INT & T0_16BIT & T0_PS_1_8);
+                TMR0IF = 0;
+                 WriteTimer0(0);
+                 while(TMR0IF == 0)
+                 {
+                   follow_simple_curves(); 
+                   check_sensors();
+                     set_leds();
+                }
                 ensure_whitespace();
                 if (SeeLine.B == 0b11111u)
                      motors_brake_all();
@@ -252,13 +260,14 @@
                  ensure_whitespace();
                  break;                 
         }
-    }    
+    } 
+    
 
     void ensure_whitespace(void)
     {
-        OpenTimer0(TIMER_INT_OFF & T0_SOURCE_INT & T0_16BIT & T0_PS_1_16);
+        OpenTimer0(TIMER_INT_OFF & T0_SOURCE_INT & T0_16BIT & T0_PS_1_8);
                  TMR0IF = 0;
-                 WriteTimer0(40000);
+                 WriteTimer0(45000);
                  while(TMR0IF == 0 )
                  {
                    follow_simple_curves();  
@@ -276,13 +285,15 @@
          else if (SeeLine.B == 0b00001u) spin_right_fast();
          else if (SeeLine.B == 0b01100u) turn_left_medium();
          else if(SeeLine.B == 0b00110u) turn_right_medium();
+         else if(SeeLine.B == 0b10100u ) turn_right_medium();
+         else if(SeeLine.B == 0b00101u) turn_left_medium();
     }    
 
     void turn_left2centre(void)
     {
                  while(SeeLine.B != 0b00100u)
                  {
-                     spin_left_slow();
+                     spin_left_medium();
                      check_sensors();
                      set_leds();
                  }                            
@@ -291,7 +302,7 @@
     void turn_right2centre(void)
     {
                  while(SeeLine.B != 0b00100u){
-                     spin_right_slow();
+                     spin_right_medium();
                      check_sensors();
                      set_leds();
                  }
