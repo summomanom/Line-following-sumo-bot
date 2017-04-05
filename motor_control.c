@@ -28,10 +28,13 @@
     int medium_left_wheel=17;
     int slow_left_wheel=21;
     
-    int wait_for_8cm = 10000;  //for half battery
+    //int wait_for_8cm = 10000;  //for half battery
+    int wait_for_8cm = 0;  //for low battery
+    
    
-    //int wait_for_8cm = 45536;  // for full battery    
-    int turn_around_time =9286; // for half battery    
+    //int wait_for_8cm = 45536;  // for full battery   
+    int turn_around_time =0;  // for almost dead battery
+    //int turn_around_time =9286; // for half battery    
     //int turn_around_time = 15286; // for full battery
 
     void motor_control(void)
@@ -106,13 +109,62 @@
 
                  WriteTimer0(turn_around_time);
 
-                 while(TMR0IF == 0&&SeeLine.B == 0b00000u)
+                 while(TMR0IF == 0&&SeeLine.B==0b00000u)
                  {
                    spin_right_fast();  
                    check_sensors();
-                     set_leds();
+                   set_leds();
+                     
                  }
                  CloseTimer0();
+               }
+               else if (SeeLine.B == 0b10000u)
+               {
+                   while(SeeLine.B != 0b00100u&&SeeLine.B!=0b01100u&&SeeLine.B!=0b00110u)
+                   {
+
+                       straight_fwd_fast();
+                       check_sensors();
+                       set_leds();
+                   }
+                   if(SeeLine.B !=0b00000u)
+                   {
+                       straight_fwd_fast();
+                       check_sensors();
+                       set_leds();
+                   }
+                   if(SeeLine.B == 0b00000u)
+                   {
+                       turn_right2centre();
+                       check_sensors();
+                       set_leds();
+                   }
+               }
+               
+               else if (SeeLine.B == 0b00001u)
+               {
+
+                   while(SeeLine.B != 0b00100u&&SeeLine.B!=0b01100u&&SeeLine.B!=0b00110u)
+                   {
+
+                           
+                       straight_fwd_fast();
+                       check_sensors();
+                       set_leds();
+                   }
+                   if(SeeLine.B != 0b00000u)
+                   {
+                       straight_fwd_fast();
+                       check_sensors();
+                       set_leds();
+                       
+                   }
+                   if(SeeLine.B == 0b00000u)
+                   {
+                       turn_left2centre();
+                       check_sensors();
+                       set_leds();
+                   }
                }
                
             }
