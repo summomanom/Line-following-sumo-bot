@@ -124,14 +124,19 @@
                }
                else if (SeeLine.B == 0b10000u)
                {
-                   while(SeeLine.B != 0b00100u&&SeeLine.B!=0b01100u&&SeeLine.B!=0b00110u)
+                   while(SeeLine.B != 0b00100u&&SeeLine.B!=0b01100u&&SeeLine.B!=0b00110u&&SeeLine.B!=0b11100)
                    {
 
                        straight_fwd_fast();
                        check_sensors();
                        set_leds();
                    }
-                   if(SeeLine.B !=0b00000u)
+               if(SeeLine.B == 0b11000u||SeeLine.B == 0b11100u||SeeLine.B == 0b11110u)
+               {
+                    check_for_whitespace(32, 0);
+                    if(SeeLine.B == 0b00000u)turn_left2centre();
+               }
+                   else if(SeeLine.B !=0b00000u)
                    {
                        straight_fwd_fast();
                        check_sensors();
@@ -147,8 +152,8 @@
                
                else if (SeeLine.B == 0b00001u)
                {
-
-                   while(SeeLine.B != 0b00100u&&SeeLine.B!=0b01100u&&SeeLine.B!=0b00110u)
+                   
+                   while(SeeLine.B != 0b00100u&&SeeLine.B!=0b01100u&&SeeLine.B!=0b00110u&&SeeLine.B!=0b00111u)
                    {
 
                            
@@ -156,7 +161,12 @@
                        check_sensors();
                        set_leds();
                    }
-                   if(SeeLine.B != 0b00000u)
+                if(SeeLine.B == 0b00011u||SeeLine.B == 0b00111u||SeeLine.B == 0b01111u)
+               {
+                    check_for_whitespace(32, 0);
+                    if(SeeLine.B == 0b00000u)turn_right2centre();
+               }
+                   else if(SeeLine.B != 0b00000u)
                    {
                        straight_fwd_fast();
                        check_sensors();
@@ -171,15 +181,31 @@
                    }
                }
                
+               else if(SeeLine.B == 0b11000u||SeeLine.B == 0b11100u||SeeLine.B == 0b11110u)
+               {
+                    check_for_whitespace(32, 0);
+                    if(SeeLine.B == 0b00000u)turn_left2centre();
+               }
+               
+               else if(SeeLine.B == 0b00011u||SeeLine.B == 0b00111u||SeeLine.B == 0b01111u)
+               {
+                    check_for_whitespace(32, 0);
+                    if(SeeLine.B == 0b00000u)turn_right2centre();
+               }
+     
             }
-            break;
+
                            
+               
+
+                           
+                           break;
             case 0b11111u:
             {
                  OpenTimer0(TIMER_INT_OFF & T0_SOURCE_INT & T0_16BIT & T0_PS_1_8);
                 TMR0IF = 0;
                  WriteTimer0(0);
-                 while(TMR0IF == 0&&SeeLine.B != 0b00000u)
+                 while(TMR0IF == 0&&SeeLine.B!=0b00000u)
                  {
                    follow_simple_curves(); 
                    check_sensors();
@@ -248,10 +274,12 @@
                     }
                     while(1)
                      motors_brake_all();
-                }  
+                }
+                
+                
+                 
             }
             break;
-            
             default:   
                 follow_simple_curves();
                 break;
