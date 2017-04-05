@@ -35,8 +35,8 @@
     
    
     //int wait_for_8cm = 45536;  // for full battery   
-    int turn_around_time =0;  // for almost dead battery
-    //int turn_around_time =9286; // for half battery    
+    //int turn_around_time =0;  // for almost dead battery
+    int turn_around_time =9286; // for half battery    
     //int turn_around_time = 15286; // for full battery
 
     void motor_control(void)
@@ -124,14 +124,14 @@
                }
                else if (SeeLine.B == 0b10000u)
                {
-                   while(SeeLine.B != 0b00100u&&SeeLine.B!=0b01100u&&SeeLine.B!=0b00110u&&SeeLine.B!=0b11100)
+                   while(SeeLine.B != 0b00100u&&SeeLine.B!=0b01100u&&SeeLine.B!=0b00110u&&SeeLine.B!=0b11100u)
                    {
 
                        straight_fwd_fast();
                        check_sensors();
                        set_leds();
                    }
-               if(SeeLine.B == 0b11000u||SeeLine.B == 0b11100u||SeeLine.B == 0b11110u)
+                if(SeeLine.B == 0b11000u||SeeLine.B == 0b11100u||SeeLine.B == 0b11110u)
                {
                     check_for_whitespace(32, 0);
                     if(SeeLine.B == 0b00000u)turn_left2centre();
@@ -157,7 +157,7 @@
                    {
 
                            
-                       straight_fwd_fast();
+                       straight_fwd_slow();
                        check_sensors();
                        set_leds();
                    }
@@ -168,7 +168,7 @@
                }
                    else if(SeeLine.B != 0b00000u)
                    {
-                       straight_fwd_fast();
+                       straight_fwd_slow();
                        check_sensors();
                        set_leds();
                        
@@ -191,6 +191,35 @@
                {
                     check_for_whitespace(32, 0);
                     if(SeeLine.B == 0b00000u)turn_right2centre();
+               }
+               
+               else if(SeeLine.B==0b10001u)
+               {
+                   while(SeeLine.B!=0b00100u&&SeeLine.B!=0b01100u&&SeeLine.B!=0b00110u)
+                   {
+                       rev_back_slow();
+                       check_sensors();
+                       set_leds();
+                   }
+                   
+                   if(SeeLine.B==0b01100u)
+                   {
+                      while(SeeLine.B!=0b00100u)
+                      {
+                          spin_right_slow();
+                       check_sensors();
+                       set_leds();
+                      }
+                   }
+                   if(SeeLine.B==0b01100u)
+                   {
+                      while(SeeLine.B!=0b00100u)
+                      {
+                          spin_left_slow();
+                            check_sensors();
+                            set_leds();
+                   }
+                   }
                }
      
             }
@@ -421,13 +450,13 @@
     {
          if ( SeeLine.B == 0b00100u || SeeLine.B == 0b10010u || SeeLine.B == 0b01001u) straight_fwd_fast();
          else if (SeeLine.B == 0b10000u) spin_left_fast();
-         else if (SeeLine.B == 0b01000u || SeeLine.B == 0b11000u ) turn_left_medium();
-         else if (SeeLine.B == 0b00010u || SeeLine.B == 0b00011u ) turn_right_medium();
+         else if (SeeLine.B == 0b01000u || SeeLine.B == 0b11000u ) turn_left_fast();
+         else if (SeeLine.B == 0b00010u || SeeLine.B == 0b00011u ) turn_right_fast();
          else if (SeeLine.B == 0b00001u) spin_right_fast();
-         else if (SeeLine.B == 0b01100u) turn_left_medium();
-         else if(SeeLine.B == 0b00110u) turn_right_medium();
-         else if(SeeLine.B == 0b10100u ) turn_right_medium();
-         else if(SeeLine.B == 0b00101u) turn_left_medium();
+         else if (SeeLine.B == 0b01100u) turn_left_fast();
+         else if(SeeLine.B == 0b00110u) turn_right_fast();
+         else if(SeeLine.B == 0b10100u ) turn_right_fast();
+         else if(SeeLine.B == 0b00101u) turn_left_fast();
     }    
 
     void turn_left2centre(void)
