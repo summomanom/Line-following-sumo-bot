@@ -107,7 +107,6 @@
                  TMR0IF = 0;
 
                  WriteTimer0(turn_around_time);
-                 
                  while(TMR0IF == 0&&SeeLine.B == 0b00000u)
                  {
                    spin_right_fast();  
@@ -468,6 +467,7 @@
     {
       set_motor_speed(left, medium, 0); 
       set_motor_speed(right, slow, 0); 
+
     }
     
     void rev_back_fast(void)
@@ -479,4 +479,5 @@
     {
       set_motor_speed(left, rev_slow, 0); 
       set_motor_speed(right, rev_slow, 0); 
+
     }
