@@ -22,6 +22,8 @@
     void turn_right2centre(void);
     void check_for_whitespace(char prescaler, int write_time);
     void ensure_whitespace(void);
+    void rev_back_fast(void);
+    void rev_back_slow(void);
             
      //variables for speed modifier
     int fast_right_wheel=-37;
@@ -105,13 +107,13 @@
                  TMR0IF = 0;
 
                  WriteTimer0(turn_around_time);
-
                  while(TMR0IF == 0&&SeeLine.B == 0b00000u)
                  {
                    spin_right_fast();  
                    check_sensors();
                      set_leds();
                  }
+                 
                  CloseTimer0();
                }
                
@@ -135,7 +137,70 @@
                 }
                 ensure_whitespace();
                 if (SeeLine.B == 0b11111u)
+                {
+                    while(SeeLine.B != 0b00000u)
+                    {
+                        straight_fwd_slow();
+                        check_sensors();
+                        set_leds();
+                    }
+                    while(SeeLine.B != 0b11111u)
+                    {
+                        rev_back_slow();
+                        check_sensors();
+                     set_leds();
+                    }
+                    while(1)
                      motors_brake_all();
+                }
+                if (SeeLine.B == 0b01111u)
+                {
+                    while(SeeLine.B != 0b11111u)
+                    {
+                        turn_right_slow();
+                        check_sensors();
+                        set_leds();
+                    }
+                    while(SeeLine.B != 0b00000u)
+                    {
+                        straight_fwd_slow();
+                        check_sensors();
+                        set_leds();
+                    }
+                    while(SeeLine.B != 0b11111u)
+                    {
+                        rev_back_slow();
+                        check_sensors();
+                     set_leds();
+                    }
+                    while(1)
+                     motors_brake_all();
+                }
+                if (SeeLine.B == 0b11110u)
+                {
+                    while(SeeLine.B != 0b11111u)
+                    {
+                        turn_left_slow();
+                        check_sensors();
+                        set_leds();
+                    }
+                    while(SeeLine.B != 0b00000u)
+                    {
+                        straight_fwd_slow();
+                        check_sensors();
+                        set_leds();
+                    }
+                    while(SeeLine.B != 0b11111u)
+                    {
+                        rev_back_slow();
+                        check_sensors();
+                     set_leds();
+                    }
+                    while(1)
+                     motors_brake_all();
+                }
+                
+                
                  
             }
             break;
@@ -402,4 +467,17 @@
     {
       set_motor_speed(left, medium, 0); 
       set_motor_speed(right, slow, 0); 
+
+    }
+    
+    void rev_back_fast(void)
+    {
+      set_motor_speed(left, rev_fast, 0); 
+      set_motor_speed(right, rev_fast, 0); 
+    }
+    void rev_back_slow(void)
+    {
+      set_motor_speed(left, rev_slow, 0); 
+      set_motor_speed(right, rev_slow, 0); 
+
     }
