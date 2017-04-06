@@ -24,6 +24,8 @@
     void ensure_whitespace(void);
     void rev_back_fast(void);
     void rev_back_slow(void);
+    void rev_back_superslow(void);
+    void straight_fwd_superslow(void);
             
      //variables for speed modifier
     int fast_right_wheel=-37;
@@ -62,17 +64,38 @@
              case 0b00101u:
              case 0b01001u:
              case 0b01101u:
+                 check_for_whitespace(8, 0);
+                 if(SeeLine.B==0b01001u||SeeLine.B==0b00101u)
+                 {
+                     while(SeeLine.B==0b01001u||SeeLine.B==0b00101u || SeeLine.B==0b10100u)
+                     {
+                     turn_left2centre();
+                     check_sensors();
+                     set_leds();
+                     }
+                 }
                  check_for_whitespace(32, 0);   
-                
                  if(SeeLine.B == 0b00000u)turn_right2centre();
+                
                  break;
              
                  //if the edge and a center gets triggered continue forward. if white space is found turn tell centered on a line
              case 0b10100u:
              case 0b10110u:
              case 0b10010u:
+                 check_for_whitespace(8, 0); 
+                 if(SeeLine.B==0b10010u||SeeLine.B==0b10100)
+                 {
+                     while(SeeLine.B==0b10010u||SeeLine.B==0b10100u||SeeLine.B==0b00101u)
+                     {
+                     turn_right2centre();
+                     check_sensors();
+                     set_leds();
+                     }
+                 }
                  check_for_whitespace(32, 0);   
                  if(SeeLine.B == 0b00000u)turn_left2centre();
+                 
                  break;
            
             case 0b00100u:
@@ -130,6 +153,10 @@
                        straight_fwd_fast();
                        check_sensors();
                        set_leds();
+                       if(SeeLine.B==0b00000u)
+                       {
+                           turn_left2centre();
+                       }
                    }
                 if(SeeLine.B == 0b11000u||SeeLine.B == 0b11100u||SeeLine.B == 0b11110u)
                {
@@ -172,12 +199,6 @@
                        check_sensors();
                        set_leds();
                        
-                   }
-                   if(SeeLine.B == 0b00000u)
-                   {
-                       turn_left2centre();
-                       check_sensors();
-                       set_leds();
                    }
                }
                
@@ -243,15 +264,21 @@
                 ensure_whitespace();
                 if (SeeLine.B == 0b11111u)
                 {
+                    OpenTimer0(TIMER_INT_OFF & T0_SOURCE_INT & T0_16BIT & T0_PS_1_32);
+                    TMR0IF = 0;
+                    WriteTimer0(0);
+                    while(TMR0IF == 0)
+                    motors_brake_all();
                     while(SeeLine.B != 0b00000u)
                     {
-                        straight_fwd_slow();
+                        straight_fwd_superslow();
                         check_sensors();
                         set_leds();
+                        
                     }
                     while(SeeLine.B != 0b11111u)
                     {
-                        rev_back_slow();
+                        rev_back_superslow();
                         check_sensors();
                      set_leds();
                     }
@@ -268,13 +295,13 @@
                     }
                     while(SeeLine.B != 0b00000u)
                     {
-                        straight_fwd_slow();
+                        straight_fwd_superslow();
                         check_sensors();
                         set_leds();
                     }
                     while(SeeLine.B != 0b11111u)
                     {
-                        rev_back_slow();
+                        rev_back_superslow();
                         check_sensors();
                      set_leds();
                     }
@@ -291,13 +318,13 @@
                     }
                     while(SeeLine.B != 0b00000u)
                     {
-                        straight_fwd_slow();
+                        straight_fwd_superslow();
                         check_sensors();
                         set_leds();
                     }
                     while(SeeLine.B != 0b11111u)
                     {
-                        rev_back_slow();
+                        rev_back_superslow();
                         check_sensors();
                      set_leds();
                     }
@@ -585,4 +612,14 @@
       set_motor_speed(left, rev_slow, 0); 
       set_motor_speed(right, rev_slow, 0); 
 
+    }
+    void rev_back_superslow(void)
+    {
+        set_motor_speed(left, rev_slow, 150); 
+      set_motor_speed(right, rev_slow, 215); 
+    }
+    void straight_fwd_superslow(void)
+    {
+      set_motor_speed(left, slow, -150); 
+      set_motor_speed(right, slow, -100); 
     }
