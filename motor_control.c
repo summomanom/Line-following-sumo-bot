@@ -22,7 +22,7 @@
     void spin_right_slow(void);
     
     //variables for speed modifier
-    int fast_right_wheel=-37;
+        int fast_right_wheel=-37;
     int medium_left_wheel=17;
     int slow_left_wheel=21;
 
@@ -39,7 +39,7 @@
              {  
                  check_sensors();    
                  set_leds(); 
-                 while(SeeLine.B == 0b00111u || SeeLine.B == 0b01111u || SeeLine.B == 0b00011u)
+                 while(SeeLine.B == 0b00111u || SeeLine.B == 0b01111u || SeeLine.B == 0b00011u) //Check if leds on left are lit up
                  {
                      while(SeeLine.B != 0b00000u)
                      {
@@ -48,7 +48,7 @@
                      set_leds(); 
                      }
                      check_sensors();
-                     set_leds();
+                     set_leds();       //go forward until blank space
                  }
                  
                      while(SeeLine.B == 0b00000u || SeeLine.B ==0b00001u|| SeeLine.B ==0b00101u ||
@@ -57,22 +57,22 @@
                          
                          spin_right_fast();
                          check_sensors();    
-                         set_leds(); 
+                         set_leds();            //on blank space, turn right until middle sensors light up
                      }
              }
                  
                
             break;
-            //left 90 degrees
+            //left 90 degrees   
              case 0b11100u:
              case 0b11000u:
              case 0b11110u:
              { 
                 check_sensors();    
                 set_leds(); 
-                 while(SeeLine.B == 0b11100u || SeeLine.B == 0b11110u || SeeLine.B == 0b11000u)
+                 while(SeeLine.B == 0b11100u || SeeLine.B == 0b11110u || SeeLine.B == 0b11000u) //check for left leds 
                  {
-                     while(SeeLine.B != 0b00000u)
+                     while(SeeLine.B != 0b00000u) //go forward until blank space
                      {
                      straight_fwd_fast();
                      check_sensors();    
@@ -88,7 +88,7 @@
                      {
                          spin_left_fast();
                          check_sensors();    
-                         set_leds(); 
+                         set_leds();    //on blank space, go spin to centre
                      }
                 
                 
