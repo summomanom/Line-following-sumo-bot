@@ -87,7 +87,8 @@
             case 0b00000u:
             {
                 //small timer to make sure it is a gap
-               ensure_whitespace();               //move forward 8cm
+               ensure_whitespace();              
+                //move forward 8cm
                if (SeeLine.B == 0b00000u)
                {
                OpenTimer0(TIMER_INT_OFF & T0_SOURCE_INT & T0_16BIT & T0_PS_1_32);
@@ -122,8 +123,10 @@
                  
                  CloseTimer0();
                }
+                //merging code
                else if (SeeLine.B == 0b10000u)
                {
+                   //move forward until center, center and middle-left, or center and middle-right LED is on
                    while(SeeLine.B != 0b00100u&&SeeLine.B!=0b01100u&&SeeLine.B!=0b00110u)
                    {
 
@@ -131,12 +134,14 @@
                        check_sensors();
                        set_leds();
                    }
+                   //move forward until white space
                    if(SeeLine.B !=0b00000u)
                    {
                        straight_fwd_fast();
                        check_sensors();
                        set_leds();
                    }
+                   //turn right to until center LED is on
                    if(SeeLine.B == 0b00000u)
                    {
                        turn_right2centre();
@@ -144,18 +149,17 @@
                        set_leds();
                    }
                }
-               
+               //merging code
                else if (SeeLine.B == 0b00001u)
                {
-
+                   //move forward until center, center and middle-left, or center and middle-right LED is on
                    while(SeeLine.B != 0b00100u&&SeeLine.B!=0b01100u&&SeeLine.B!=0b00110u)
                    {
-
-                           
                        straight_fwd_fast();
                        check_sensors();
                        set_leds();
                    }
+                   //move forward until white space
                    if(SeeLine.B != 0b00000u)
                    {
                        straight_fwd_fast();
@@ -163,6 +167,7 @@
                        set_leds();
                        
                    }
+                   //turn left until center LED is on
                    if(SeeLine.B == 0b00000u)
                    {
                        turn_left2centre();
@@ -173,11 +178,12 @@
                
             }
             break;
-                           
+            //landing pad code             
             case 0b11111u:
             {
+                //small timer to ensure it is the landing pad
                  OpenTimer0(TIMER_INT_OFF & T0_SOURCE_INT & T0_16BIT & T0_PS_1_8);
-                TMR0IF = 0;
+                 TMR0IF = 0;
                  WriteTimer0(0);
                  while(TMR0IF == 0&&SeeLine.B != 0b00000u)
                  {
@@ -188,64 +194,75 @@
                 ensure_whitespace();
                 if (SeeLine.B == 0b11111u)
                 {
+                    //move forward until white space
                     while(SeeLine.B != 0b00000u)
                     {
                         straight_fwd_slow();
                         check_sensors();
                         set_leds();
                     }
+                    //reverse until back on the landing pad
                     while(SeeLine.B != 0b11111u)
                     {
                         rev_back_slow();
                         check_sensors();
                      set_leds();
                     }
+                    //stop
                     while(1)
                      motors_brake_all();
                 }
                 if (SeeLine.B == 0b01111u)
                 {
+                    //turn right until all LED are on
                     while(SeeLine.B != 0b11111u)
                     {
                         turn_right_slow();
                         check_sensors();
                         set_leds();
                     }
+                    //move forward until white space
                     while(SeeLine.B != 0b00000u)
                     {
                         straight_fwd_slow();
                         check_sensors();
                         set_leds();
                     }
+                    //reverse until back on the landing pad
                     while(SeeLine.B != 0b11111u)
                     {
                         rev_back_slow();
                         check_sensors();
                      set_leds();
                     }
+                    //stop
                     while(1)
                      motors_brake_all();
                 }
                 if (SeeLine.B == 0b11110u)
                 {
+                    //turn left until all LED are on
                     while(SeeLine.B != 0b11111u)
                     {
                         turn_left_slow();
                         check_sensors();
                         set_leds();
                     }
+                    //move forward until white space
                     while(SeeLine.B != 0b00000u)
                     {
                         straight_fwd_slow();
                         check_sensors();
                         set_leds();
                     }
+                    //reverse until back on the landing pad
                     while(SeeLine.B != 0b11111u)
                     {
                         rev_back_slow();
                         check_sensors();
                      set_leds();
                     }
+                    //stop
                     while(1)
                      motors_brake_all();
                 }  
@@ -258,9 +275,10 @@
 
           } 
     }
-    
+     //moves forward until it hits white space
     void check_for_whitespace(char prescaler, int write_time)
     {
+        //switch statement for each prescalar and timer value
         switch(prescaler)
         {
             case 1:
