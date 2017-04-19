@@ -115,9 +115,10 @@
             default:       break;
           } 
     }
-    
+    //moves forward until it hits white space
     void check_for_whitespace(char prescaler, int write_time)
     {
+        //switch statement for each prescalar and timer value
         switch(prescaler)
         {
             case 1:
@@ -231,7 +232,7 @@
          else if (SeeLine.b.CntRight) turn_right_medium();
          else if (SeeLine.b.Right) spin_right_fast();
     }
-    
+    //turn left until center LED is lit up
     void turn_left2centre(void)
     {
                  while(SeeLine.B != 0b00100u)
@@ -241,6 +242,7 @@
                      set_leds();
                  }
     }
+    //turn right until center LED is lit up
     void turn_right2centre(void)
     {
                  while(SeeLine.B != 0b00100u)
