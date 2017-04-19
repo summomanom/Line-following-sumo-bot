@@ -21,41 +21,49 @@
     void turn_left2centre(void);
     void turn_right2centre(void);
     void check_for_whitespace(char prescaler, int write_time);
-     //variables for speed modifier
+   //variables for speed modifier of the motors to allow for straighter movement
     int fast_right_wheel=-37;
     int medium_left_wheel=17;
     int slow_left_wheel=21;
 
     void motor_control(void)
     {
-         // very simple motor control
+        // Check the values of all the sensors to determine what the robot should be doing.
          switch(SeeLine.B)
          {
-               //if one side gets triggered continue forward. if white space is found turn tell centered on a line
+          //If multiple sensors on the left side are detected move into these cases for right hand turns
              case 0b11000u:
              case 0b11100u:
+                 //Call check for whitespace to open up a small timer to allow the robot to cross an intersection. if the robot sees all white it will break out of the timer.
                  check_for_whitespace(16, 20000);
+                 //if the robot is on all white after the timer ends we know we passed a turn and must turn nutil centered on a line
                  if(SeeLine.B == 0b00000u)turn_left2centre();
                  break;
              
-                 //if one side gets triggered continue forward. if white space is found turn tell centered on a line
+            //If multiple sensors on the left side are detected move into these cases for right hand turns             
              case 0b00011u:
              case 0b00111u:
+                    //Call check for whitespace to open up a small timer to allow the robot to cross an intersection. if the robot sees all white it will break out of the timer.
                  check_for_whitespace(16, 20000);   
+              //if the robot is on all white after the timer ends we know we passed a turn and must turn nutil centered on a line
                  if(SeeLine.B == 0b00000u)turn_right2centre();
                  break;
                  
                  //if the edge and a center gets triggered continue forward. if white space is found turn tell centered on a line
              case 0b00101u:
              case 0b01001u:
-                 check_for_whitespace(32, 0);   
+                  //Call check for whitespace to open up a small timer to allow the robot to cross an intersection. if the robot sees all white it will break out of the timer.
+                 check_for_whitespace(32, 0); 
+                 //if the robot is on all white after the timer ends we know we passed a turn and must turn nutil centered on a line
                  if(SeeLine.B == 0b00000u)turn_right2centre();
                  break;
              
                  //if the edge and a center gets triggered continue forward. if white space is found turn tell centered on a line
              case 0b10100u:
              case 0b10010u:
-                 check_for_whitespace(32, 0);   
+                 //Call check for whitespace to open up a small timer to allow the robot to cross an intersection. if the robot sees all white it will break out of the timer.
+                 check_for_whitespace(32, 0);
+                  //if the robot is on all white after the timer ends we know we passed a turn and must turn nutil centered on a line
                  if(SeeLine.B == 0b00000u)turn_left2centre();
                  break;
            
@@ -68,7 +76,7 @@
                            follow_simple_curves();
                            break;
 
-
+//if the robot detects all white we need to check if there is a gap or a need to turn around
             case 0b00000u:
             {
                 //small timer to make sure it is a gap
@@ -115,7 +123,7 @@
             default:       break;
           } 
     }
-    
+    //function that can be called wth differnt scalers and write time values that causes the robot to move forward until a certain time has passed or all white is deteccted.
     void check_for_whitespace(char prescaler, int write_time)
     {
         switch(prescaler)
