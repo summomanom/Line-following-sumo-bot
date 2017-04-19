@@ -21,25 +21,30 @@
     void turn_left2centre(void);
     void turn_right2centre(void);
     void check_for_whitespace(char prescaler, int write_time);
-     //variables for speed modifier
+//variables for speed modifier of the motors to allow for straighter movement
     int fast_right_wheel=-37;
     int medium_left_wheel=17;
     int slow_left_wheel=21;
 
     void motor_control(void)
     {
-         // very simple motor control
+         // Check the values of all the sensors to determine what the robot should be doing.
          switch(SeeLine.B)
          {
+       //If multiple sensors on the left side are detected move into these cases for right hand turns
              case 0b11000u:
              case 0b11100u:
+                 //Call check for whitespace to open up a small timer to allow the robot to cross an intersection. if the robot sees all white it will break out of the timer.
                  check_for_whitespace(16, 20000);
+                 //if the robot is on all white after the timer ends we know we passed a turn and must turn nutil centered on a line
                  if(SeeLine.B == 0b00000u)turn_left2centre();
                  break;
-             
+      //If multiple sensors on the left side are detected move into these cases for right hand turns
              case 0b00011u:
              case 0b00111u:
+                 //Call check for whitespace to open up a small timer to allow the robot to cross an intersection. if the robot sees all white it will break out of the timer.
                  check_for_whitespace(16, 20000);   
+                 //if the robot is on all white after the timer ends we know we passed a turn and must turn nutil centered on a line
                  if(SeeLine.B == 0b00000u)turn_right2centre();
                  break;
            
@@ -52,14 +57,14 @@
                            follow_simple_curves();
                            break;
 
-
+    //if no leds are lit up brake all the motors.
             case 0b00000u:
                            motors_brake_all();
                            break;
             default:       break;
           } 
     }
-    
+    //function that can be called wth differnt scalers and write time values that causes the robot to move forward until a certain time has passed or all white is deteccted.
     void check_for_whitespace(char prescaler, int write_time)
     {
         switch(prescaler)
@@ -166,7 +171,7 @@
         }
     }
     
-
+//Code provided by Coombes. Adjusts the robot motors to operate at different speeds so it can adjust on a slightly curved path
     void follow_simple_curves(void)
     {
          if ( SeeLine.b.Center ) straight_fwd_fast();
@@ -196,7 +201,7 @@
     }
 
 
-    //Spins in one spot to the left
+  
     void spin_left_fast(void)
     {
       set_motor_speed(left, rev_fast, 0); 
@@ -213,7 +218,7 @@
       set_motor_speed(right, slow, 0); 
     }
     
-    ///turns on one wheel to the left
+  
     void turn_left_fast(void)
     {
       set_motor_speed(left, stop, 0); 
@@ -230,7 +235,7 @@
       set_motor_speed(right, slow, 0); 
     }
     
-    //move in a straight line
+   
     void straight_fwd_fast(void)
     {
       set_motor_speed(left, fast, 0); 
@@ -246,7 +251,7 @@
       set_motor_speed(left, slow, slow_left_wheel); 
       set_motor_speed(right, slow, 0); 
     }
-    //spin in one place to the right
+   
     void spin_right_fast(void)
     {
       set_motor_speed(left, fast, 0); 
@@ -263,7 +268,7 @@
       set_motor_speed(right, rev_slow, 0); 
     }
     
-    //spin on one wheel to the right
+
     void turn_right_fast(void)
     {
       set_motor_speed(left, fast, 0); 
