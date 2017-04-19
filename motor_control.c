@@ -117,14 +117,14 @@
                    spin_right_fast();  
                    check_sensors();
                    set_leds();
-                     
+                     //turn around after a small delay
                  }
                  
                  CloseTimer0();
                }
                else if (SeeLine.B == 0b10000u)
                {
-                   while(SeeLine.B != 0b00100u&&SeeLine.B!=0b01100u&&SeeLine.B!=0b00110u)
+                   while(SeeLine.B != 0b00100u&&SeeLine.B!=0b01100u&&SeeLine.B!=0b00110u)//merging code;move forward until whitespace
                    {
 
                        straight_fwd_fast();
@@ -137,7 +137,7 @@
                        check_sensors();
                        set_leds();
                    }
-                   if(SeeLine.B == 0b00000u)
+                   if(SeeLine.B == 0b00000u)//if one on left is seen first, turn right to centre to merge
                    {
                        turn_right2centre();
                        check_sensors();
@@ -148,7 +148,8 @@
                else if (SeeLine.B == 0b00001u)
                {
 
-                   while(SeeLine.B != 0b00100u&&SeeLine.B!=0b01100u&&SeeLine.B!=0b00110u)
+                   while(SeeLine.B != 0b00100u&&SeeLine.B!=0b01100u&&SeeLine.B!=0b00110u)//if one on right is lit up,
+                                                                                       //move forward until whitespace
                    {
 
                            
@@ -163,7 +164,7 @@
                        set_leds();
                        
                    }
-                   if(SeeLine.B == 0b00000u)
+                   if(SeeLine.B == 0b00000u)//once whitespace is found, turn left to centre to merge
                    {
                        turn_left2centre();
                        check_sensors();
@@ -178,7 +179,7 @@
 
                            
                            break;
-            case 0b11111u:
+            case 0b11111u://landing pad code
             {
                  OpenTimer0(TIMER_INT_OFF & T0_SOURCE_INT & T0_16BIT & T0_PS_1_8);
                 TMR0IF = 0;
@@ -188,63 +189,63 @@
                    follow_simple_curves(); 
                    check_sensors();
                      set_leds();
-                }
+                }                       //follow simple curves for a small timer to ensure all black
                 ensure_whitespace();
                 if (SeeLine.B == 0b11111u)
-                {
+                {                          //move forward slowly until whitespace
                     while(SeeLine.B != 0b00000u)
                     {
                         straight_fwd_slow();
                         check_sensors();
                         set_leds();
                     }
-                    while(SeeLine.B != 0b11111u)
+                    while(SeeLine.B != 0b11111u)//reverse back to landing pad
                     {
                         rev_back_slow();
                         check_sensors();
                      set_leds();
                     }
                     while(1)
-                     motors_brake_all();
+                     motors_brake_all();//stop
                 }
-                if (SeeLine.B == 0b01111u)
+                if (SeeLine.B == 0b01111u)//for correcting to the left
                 {
-                    while(SeeLine.B != 0b11111u)
+                    while(SeeLine.B != 0b11111u)//turn left until all 5 sensors light up
                     {
                         turn_right_slow();
                         check_sensors();
                         set_leds();
                     }
-                    while(SeeLine.B != 0b00000u)
+                    while(SeeLine.B != 0b00000u)//move forward until whitespace
                     {
                         straight_fwd_slow();
                         check_sensors();
                         set_leds();
                     }
-                    while(SeeLine.B != 0b11111u)
+                    while(SeeLine.B != 0b11111u)//reverse into landing pad
                     {
                         rev_back_slow();
                         check_sensors();
                      set_leds();
                     }
                     while(1)
-                     motors_brake_all();
+                     motors_brake_all();//stop
                 }
-                if (SeeLine.B == 0b11110u)
+                if (SeeLine.B == 0b11110u)//for correcting to the right
                 {
-                    while(SeeLine.B != 0b11111u)
+                    while(SeeLine.B != 0b11111u)//turn right until all 5 sensors light up
                     {
                         turn_left_slow();
                         check_sensors();
                         set_leds();
                     }
-                    while(SeeLine.B != 0b00000u)
+                    while(SeeLine.B != 0b00000u)//move forward until whitespace
                     {
                         straight_fwd_slow();
                         check_sensors();
                         set_leds();
                     }
-                    while(SeeLine.B != 0b11111u)
+                    while(SeeLine.B != 0b11111u)//reverse into landing pad
                     {
                         rev_back_slow();
                         check_sensors();
