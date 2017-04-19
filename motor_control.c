@@ -4,24 +4,24 @@
 #include "motor_control.h"
 #include "interrupts.h"
 #include "osc.h"
-    void follow_simple_curves(void);
-    void spin_left(void);
-    void turn_left(void);
-    void straight_fwd(void);
-    void turn_right(void);
-    void spin_right(void);
 
+void follow_simple_curves(void);
+void spin_left(void);
+void turn_left(void);
+void straight_fwd(void);
+void turn_right(void);
+void spin_right(void);
 
-    void motor_control(void)
+void motor_control(void)
     {
-         // very simple motor control
+         // Check the values of all the sensors to determine what the robot should be doing.
          switch(SeeLine.B)
          {
+             //If multiple sensors on the right side are detected move into these cases for right hand turns
              case 0b00111u:
              case 0b01111u:
              case 0b00011u:
-   
-             {  
+             {  //recheck the sensors and then while the right side of sensors are lit up continue to move forward
                  check_sensors();    // from sumovore.c
                  set_leds(); 
                  while(SeeLine.B == 0b00111u || SeeLine.B == 0b01111u || SeeLine.B == 0b00011u)
@@ -30,7 +30,7 @@
                      check_sensors();    // from sumovore.c
                      set_leds(); 
                  }
-                 
+                 //If the sensors stop being all lit up on the right enter this while loop to spin to the right until we see a sensor combination that works for follow simple curves
                      while(SeeLine.B == 0b00000u || SeeLine.B ==0b00001u||SeeLine.B == 0b00100u||SeeLine.B == 0b00110u||SeeLine.B == 0b00011u)
                      {
                          
@@ -42,12 +42,13 @@
                  
                
             break;
-            
+             //If multiple sensors on the left side are detected move into these cases for right hand turns
              case 0b11100u:
              case 0b11000u:
              case 0b11110u:
              { 
-              check_sensors();    // from sumovore.c
+                 //recheck the sensors and then while the left side of sensors are lit up continue to move forward
+                 check_sensors();    // from sumovore.c
                  set_leds(); 
                  while(SeeLine.B == 0b11100u || SeeLine.B == 0b11110u || SeeLine.B == 0b11000u)
                  {
@@ -55,7 +56,7 @@
                      check_sensors();    // from sumovore.c
                      set_leds(); 
                  }
-                 
+                 //If the sensors stop being all lit up on the right enter this while loop to spin to the left until we see a sensor combination that works for follow simple curves
                      while(SeeLine.B == 0b00000u || SeeLine.B ==0b10000u||SeeLine.B == 0b00100u||SeeLine.B == 0b01100u||SeeLine.B == 0b11000u)
                          
                      {
@@ -67,6 +68,7 @@
              }
                  break;
            
+                 //if a single led lights up use the follow simple curves code provided by coombes
             case 0b00100u:
             case 0b00010u:
             case 0b01000u:
@@ -76,7 +78,7 @@
                            follow_simple_curves();
                            break;
 
-
+            //if no leds are lit up brake all the motors.
             case 0b00000u:
                             motors_brake_all();
                            break;
@@ -84,6 +86,7 @@
           } 
     }
 
+    //Code provided by Coombes. Adjusts the robot motors to operate at different speeds so it can adjust on a slightly curved path
     void follow_simple_curves(void)
     {
          if ( SeeLine.b.Center ) straight_fwd();
