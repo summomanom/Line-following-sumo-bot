@@ -122,53 +122,54 @@
                  
                  CloseTimer0();
                }
-               else if (SeeLine.B == 0b10000u)
+               else if (SeeLine.B == 0b10000u)//merging code if one sensor on left is found
                {
                    while(SeeLine.B != 0b00100u&&SeeLine.B!=0b01100u&&SeeLine.B!=0b00110u&&SeeLine.B!=0b11100)
                    {
 
-                       straight_fwd_fast();
-                       check_sensors();
+                       straight_fwd_fast();     //move straight forward either until sensors for left turns are lit up
+                       check_sensors();         //OR move straight forward until whitespace is found
                        set_leds();
                    }
-               if(SeeLine.B == 0b11000u||SeeLine.B == 0b11100u||SeeLine.B == 0b11110u)
+               if(SeeLine.B == 0b11000u||SeeLine.B == 0b11100u||SeeLine.B == 0b11110u)//**For 90 turn**
                {
                     check_for_whitespace(32, 0);
-                    if(SeeLine.B == 0b00000u)turn_left2centre();
+                    if(SeeLine.B == 0b00000u)turn_left2centre();//turn left for a left 90 turn
                }
                    else if(SeeLine.B !=0b00000u)
                    {
-                       straight_fwd_fast();
+                       straight_fwd_fast();//continue movingforward
                        check_sensors();
                        set_leds();
                    }
-                   if(SeeLine.B == 0b00000u)
+                   if(SeeLine.B == 0b00000u)//**for merging code**
+                       
                    {
-                       turn_right2centre();
+                       turn_right2centre();//turn tight for merging right
                        check_sensors();
                        set_leds();
                    }
                }
                
-               else if (SeeLine.B == 0b00001u)
+               else if (SeeLine.B == 0b00001u)//merging code if one sensor on right is found
                {
                    
                    while(SeeLine.B != 0b00100u&&SeeLine.B!=0b01100u&&SeeLine.B!=0b00110u&&SeeLine.B!=0b00111u)
                    {
 
                            
-                       straight_fwd_fast();
-                       check_sensors();
+                       straight_fwd_fast();    //move straight forward either until sensors for right turns are lit up
+                       check_sensors();        //Or until whitespace is found for merges
                        set_leds();
                    }
                 if(SeeLine.B == 0b00011u||SeeLine.B == 0b00111u||SeeLine.B == 0b01111u)
                {
                     check_for_whitespace(32, 0);
-                    if(SeeLine.B == 0b00000u)turn_right2centre();
+                    if(SeeLine.B == 0b00000u)turn_right2centre();//turn right for right 90
                }
                    else if(SeeLine.B != 0b00000u)
                    {
-                       straight_fwd_fast();
+                       straight_fwd_fast();//turn left if whitespace is found to merge left
                        check_sensors();
                        set_leds();
                        
@@ -184,23 +185,20 @@
                else if(SeeLine.B == 0b11000u||SeeLine.B == 0b11100u||SeeLine.B == 0b11110u)
                {
                     check_for_whitespace(32, 0);
-                    if(SeeLine.B == 0b00000u)turn_left2centre();
+                    if(SeeLine.B == 0b00000u)turn_left2centre();//if multiple leds are lit up on left side after gap, turn left
                }
                
                else if(SeeLine.B == 0b00011u||SeeLine.B == 0b00111u||SeeLine.B == 0b01111u)
                {
                     check_for_whitespace(32, 0);
-                    if(SeeLine.B == 0b00000u)turn_right2centre();
+                    if(SeeLine.B == 0b00000u)turn_right2centre();//if multiple leds are lit up on right side after gap, turn left
                }
      
             }
 
-                           
-               
-
-                           
+                 
                            break;
-            case 0b11111u:
+            case 0b11111u://landing pad code
             {
                  OpenTimer0(TIMER_INT_OFF & T0_SOURCE_INT & T0_16BIT & T0_PS_1_8);
                 TMR0IF = 0;
@@ -211,16 +209,16 @@
                    check_sensors();
                      set_leds();
                 }
-                ensure_whitespace();
-                if (SeeLine.B == 0b11111u)
+                ensure_whitespace();        //small timer to ensure landing pad
+                if (SeeLine.B == 0b11111u)  
                 {
-                    while(SeeLine.B != 0b00000u)
+                    while(SeeLine.B != 0b00000u)//move fwd until whitespace
                     {
                         straight_fwd_slow();
                         check_sensors();
                         set_leds();
                     }
-                    while(SeeLine.B != 0b11111u)
+                    while(SeeLine.B != 0b11111u)//rev until landing pad and stop
                     {
                         rev_back_slow();
                         check_sensors();
@@ -229,15 +227,15 @@
                     while(1)
                      motors_brake_all();
                 }
-                if (SeeLine.B == 0b01111u)
+                if (SeeLine.B == 0b01111u)//for correcting left
                 {
-                    while(SeeLine.B != 0b11111u)
+                    while(SeeLine.B != 0b11111u)//turn left to landing pad
                     {
                         turn_right_slow();
                         check_sensors();
                         set_leds();
                     }
-                    while(SeeLine.B != 0b00000u)
+                    while(SeeLine.B != 0b00000u)//move fwd to whitespace then reverse to darkspace and stop
                     {
                         straight_fwd_slow();
                         check_sensors();
@@ -254,13 +252,13 @@
                 }
                 if (SeeLine.B == 0b11110u)
                 {
-                    while(SeeLine.B != 0b11111u)
+                    while(SeeLine.B != 0b11111u)//to correct right, turn right to darkspace
                     {
                         turn_left_slow();
                         check_sensors();
                         set_leds();
                     }
-                    while(SeeLine.B != 0b00000u)
+                    while(SeeLine.B != 0b00000u)//move fwd to white, rev to dark, and stop
                     {
                         straight_fwd_slow();
                         check_sensors();
