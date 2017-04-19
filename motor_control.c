@@ -99,7 +99,7 @@
                  }
              }
                  break; 
-             
+             //Check for leds on right             
              case 0b00111u:
              case 0b01111u:
              case 0b00011u:
@@ -120,7 +120,7 @@
                          spin_right_fast();
                          check_sensors();    
                          set_leds(); 
-                     }
+                     }//When it hits whitespace, turn to centre
              }
                  
                
@@ -146,7 +146,7 @@
                          spin_left_fast();
                          check_sensors();    
                          set_leds(); 
-                     }
+                     }//when it hits whitespace, turn around
              }
                  break;
             
