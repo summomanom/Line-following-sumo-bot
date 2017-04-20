@@ -145,7 +145,7 @@
                  
                  CloseTimer0();
                }
-               else if (SeeLine.B == 0b10000u)
+               else if (SeeLine.B == 0b10000u)//code for either gap to merge right or gap to left 90 turn
                {
                    while(SeeLine.B != 0b00100u&&SeeLine.B!=0b01100u&&SeeLine.B!=0b00110u&&SeeLine.B!=0b11100u)
                    {
@@ -153,15 +153,15 @@
                        straight_fwd_fast();
                        check_sensors();
                        set_leds();
-                       if(SeeLine.B==0b00000u)
+                       if(SeeLine.B==0b00000u)//(if robot leaves gap on angle)
                        {
-                           turn_left2centre();
+                           turn_left2centre();//check for whitespace, and turn 90 left if found
                        }
                    }
                 if(SeeLine.B == 0b11000u||SeeLine.B == 0b11100u||SeeLine.B == 0b11110u)
                {
                     check_for_whitespace(32, 0);
-                    if(SeeLine.B == 0b00000u)turn_left2centre();
+                    if(SeeLine.B == 0b00000u)turn_left2centre();//move fwd to whitespace if left turn leds are found, and turn 90
                }
                    else if(SeeLine.B !=0b00000u)
                    {
@@ -169,7 +169,7 @@
                        check_sensors();
                        set_leds();
                    }
-                   if(SeeLine.B == 0b00000u)
+                   if(SeeLine.B == 0b00000u)//move fwd to white and turn right
                    {
                        turn_right2centre();
                        check_sensors();
@@ -177,21 +177,21 @@
                    }
                }
                
-               else if (SeeLine.B == 0b00001u)
+               else if (SeeLine.B == 0b00001u)//code for either gap to merge left or gap to right 90 turn
                {
                    
                    while(SeeLine.B != 0b00100u&&SeeLine.B!=0b01100u&&SeeLine.B!=0b00110u&&SeeLine.B!=0b00111u)
                    {
 
                            
-                       straight_fwd_slow();
+                       straight_fwd_slow();//move fwd until middle sensors are lit up
                        check_sensors();
                        set_leds();
                    }
                 if(SeeLine.B == 0b00011u||SeeLine.B == 0b00111u||SeeLine.B == 0b01111u)
                {
                     check_for_whitespace(32, 0);
-                    if(SeeLine.B == 0b00000u)turn_right2centre();
+                    if(SeeLine.B == 0b00000u)turn_right2centre();//if right turn sensors light up turn right
                }
                    else if(SeeLine.B != 0b00000u)
                    {
@@ -214,8 +214,8 @@
                     if(SeeLine.B == 0b00000u)turn_right2centre();
                }
                
-               else if(SeeLine.B==0b10001u)
-               {
+               else if(SeeLine.B==0b10001u)//rare case where robot comes off gap at angle, touching two tracks.
+               {                           //Reverse to previous line, correct to centre, then retry.
                    while(SeeLine.B!=0b00100u&&SeeLine.B!=0b01100u&&SeeLine.B!=0b00110u)
                    {
                        rev_back_slow();
@@ -250,7 +250,7 @@
 
                            
                            break;
-            case 0b11111u:
+            case 0b11111u: //landing pad code
             {
                  OpenTimer0(TIMER_INT_OFF & T0_SOURCE_INT & T0_16BIT & T0_PS_1_8);
                 TMR0IF = 0;
@@ -261,15 +261,15 @@
                    check_sensors();
                      set_leds();
                 }
-                ensure_whitespace();
-                if (SeeLine.B == 0b11111u)
+                ensure_whitespace();//small timer to ensure darkspace
+                if (SeeLine.B == 0b11111u)  
                 {
                     OpenTimer0(TIMER_INT_OFF & T0_SOURCE_INT & T0_16BIT & T0_PS_1_32);
                     TMR0IF = 0;
                     WriteTimer0(0);
                     while(TMR0IF == 0)
-                    motors_brake_all();
-                    while(SeeLine.B != 0b00000u)
+                    motors_brake_all();//stop to slow robot down
+                    while(SeeLine.B != 0b00000u)//move forward until white, rev until dark and stop
                     {
                         straight_fwd_superslow();
                         check_sensors();
@@ -285,15 +285,15 @@
                     while(1)
                      motors_brake_all();
                 }
-                if (SeeLine.B == 0b01111u)
+                if (SeeLine.B == 0b01111u)//for correcting left
                 {
                     while(SeeLine.B != 0b11111u)
                     {
-                        turn_right_slow();
+                        turn_right_slow();//turn right to landing pad
                         check_sensors();
                         set_leds();
                     }
-                    while(SeeLine.B != 0b00000u)
+                    while(SeeLine.B != 0b00000u)//move fwd until white, rev until dark and stop
                     {
                         straight_fwd_superslow();
                         check_sensors();
@@ -308,15 +308,15 @@
                     while(1)
                      motors_brake_all();
                 }
-                if (SeeLine.B == 0b11110u)
+                if (SeeLine.B == 0b11110u)//for correcting left
                 {
                     while(SeeLine.B != 0b11111u)
                     {
-                        turn_left_slow();
+                        turn_left_slow();//spin left to landing pad
                         check_sensors();
                         set_leds();
                     }
-                    while(SeeLine.B != 0b00000u)
+                    while(SeeLine.B != 0b00000u)//move fwd to white rev to dark and stop
                     {
                         straight_fwd_superslow();
                         check_sensors();
@@ -342,7 +342,7 @@
 
           } 
     }
-    
+    //check for whitespace function is just a timer to follow simple curves until whitespace is found
     void check_for_whitespace(char prescaler, int write_time)
     {
         switch(prescaler)
